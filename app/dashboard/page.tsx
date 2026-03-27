@@ -11,8 +11,8 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  const { data: reports = [] } = await supabase
-    .from('expense_reports')
+  const { data: rawReports } = await supabase
+  const reports: ExpenseReport[] = rawReports ?? []
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })

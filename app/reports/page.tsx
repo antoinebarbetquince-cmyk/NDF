@@ -21,7 +21,8 @@ export default async function ReportsPage({ searchParams }: { searchParams: { st
     .eq('user_id', user.id).order('created_at', { ascending: false })
   const sf = searchParams.status
   if (sf && sf !== 'all') query = query.eq('status', sf)
-  const { data: reports = [] } = await query as { data: ExpenseReport[] }
+  const { data: rawData } = await query as { data: ExpenseReport[] | null }
+  const reports: ExpenseReport[] = rawData ?? []
 
   const { count: pendingCount = 0 } = await supabase
     .from('expense_reports').select('*', { count:'exact', head:true }).eq('status','submitted')

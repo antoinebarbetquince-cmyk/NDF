@@ -7,8 +7,9 @@ const RC: Record<string,string> = { employee:'badge badge-draft', validator:'bad
 
 export default async function AdminUsersPage() {
   const supabase = createClient()
-  const { data: users = [] } = await supabase
+  const { data: rawUsers } = await supabase
     .from('profiles').select('*, validator:profiles!validator_id(first_name,last_name)').order('last_name')
+  const users: any[] = rawUsers ?? []
 
   const { count: pendingCount = 0 } = await supabase
     .from('expense_reports').select('*',{count:'exact',head:true}).eq('status','submitted')

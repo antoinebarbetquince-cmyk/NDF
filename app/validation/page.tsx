@@ -6,8 +6,8 @@ import { formatCurrency, formatDate } from '@/lib/utils/format'
 
 export default async function ValidationPage() {
   const supabase = createClient()
-  const { data: reports = [] } = await supabase
-    .from('expense_reports')
+  const { data: rawReports } = await supabase
+  const reports: any[] = rawReports ?? []
     .select('*, user:profiles!user_id(id,first_name,last_name,email), lines:expense_lines(id)')
     .eq('status','submitted')
     .order('submitted_at',{ascending:true}) as {data:any[]}
