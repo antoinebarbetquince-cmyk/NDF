@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NoteFrais</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f1117;color:#e8e6df}
+:root{
+  --ink:#0f1117;--ink2:#1a1d27;--ink3:#242837;--ink4:#2e3347;
+  --s:#fff;--s2:#f7f6f3;--s3:#efede8;
+  --accent:#4f6ef7;--acc2:#3a54d4;--acc-bg:#eef1fe;--acc-t:#2d46c4;
+  --green:#22c55e;--gbg:#f0fdf4;--gt:#15803d;
+  --amber:#f59e0b;--abg:#fffbeb;--at:#92400e;
+  --red:#ef4444;--rbg:#fef2f2;--rt:#991b1b;
+  --slate:#64748b;
+  --b1:rgba(0,0,0,.07);--b2:rgba(0,0,0,.13);--b3:rgba(0,0,0,.22);
+  --r:8px;--rl:12px;--rx:16px;
+}
+/* LOGIN */
+#login-screen{display:flex;align-items:center;justify-content:center;width:100%;height:100%;position:fixed;inset:0;z-index:999;background:linear-gradient(135deg,#0f1117 0%,#1a1d27 50%,#0f1117 100%)}
+.lcard{background:#1a1d27;border:1px solid rgba(255,255,255,.08);border-radius:var(--rx);padding:38px 42px;width:390px;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.llogo{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.llogo-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(79,110,247,.4)}
+.llogo-icon svg{width:16px;height:16px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round}
+.llogo-text{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.ltag{font-size:11px;color:rgba(255,255,255,.35);margin-bottom:28px;padding-left:44px}
+.ldiv{font-size:10px;color:rgba(255,255,255,.2);margin:18px 0;text-align:center;display:flex;align-items:center;gap:8px}
+.ldiv::before,.ldiv::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
+.lf{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.lf label{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.05em;text-transform:uppercase}
+.lf input{font-size:13px;padding:9px 12px;border:1px solid rgba(255,255,255,.09);border-radius:var(--r);background:rgba(255,255,255,.05);color:#fff;font-family:inherit;outline:none;transition:border-color .15s}
+.lf input:focus{border-color:var(--accent)}
+.lf input::placeholder{color:rgba(255,255,255,.18)}
+.lbtn{width:100%;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;box-shadow:0 4px 14px rgba(79,110,247,.35);transition:all .15s}
+.lbtn:hover{background:var(--acc2)}
+.lerr{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);color:#fca5a5;font-size:11px;padding:8px 11px;border-radius:var(--r);margin-bottom:12px;display:none}
+.lerr.show{display:block}
+.qaccs{display:flex;flex-direction:column;gap:5px}
+.qacc{display:flex;align-items:center;gap:9px;padding:8px 11px;border:1px solid rgba(255,255,255,.06);border-radius:var(--r);cursor:pointer;transition:all .13s;background:rgba(255,255,255,.02)}
+.qacc:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.13)}
+.qav{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.qname{font-size:12px;color:#fff;font-weight:500}
+.qrole{font-size:10px;color:rgba(255,255,255,.3)}
+/* APP */
+#app-screen{display:none;width:100%;height:100%;position:fixed;inset:0}
+.app{display:flex;width:100%;height:100%;background:var(--s2)}
+/* SIDEBAR */
+.sb{width:215px;flex-shrink:0;background:var(--ink2);display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,.05)}
+.sb-brand{padding:16px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:9px}
+.sb-ico{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(79,110,247,.3)}
+.sb-ico svg{width:14px;height:14px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round}
+.sb-ttl{font-size:13px;font-weight:700;color:#fff}
+.sb-v{font-size:9px;color:rgba(255,255,255,.2)}
+.sb-sec{padding:14px 12px 4px;font-size:9px;color:rgba(255,255,255,.22);letter-spacing:.1em;text-transform:uppercase}
+.sb-it{display:flex;align-items:center;gap:9px;padding:8px 11px;margin:1px 7px;border-radius:var(--r);cursor:pointer;font-size:12.5px;color:rgba(255,255,255,.45);transition:all .12s;user-select:none;position:relative}
+.sb-it:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.8)}
+.sb-it.active{background:rgba(79,110,247,.18);color:#fff}
+.sb-it.active::before{content:'';position:absolute;left:-7px;top:50%;transform:translateY(-50%);width:3px;height:17px;background:var(--accent);border-radius:0 2px 2px 0}
+.sb-it svg{width:14px;height:14px;opacity:.55;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sb-it.active svg{opacity:1}
+.sb-bdg{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:17px;text-align:center}
+.sb-bot{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,.05)}
+.sb-usr{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sb-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.sb-uname{font-size:11px;font-weight:600;color:#fff}
+.sb-urole{font-size:10px;color:rgba(255,255,255,.3)}
+.sb-out{width:100%;padding:7px;background:rgba(239,68,68,.08);color:#fca5a5;border:1px solid rgba(239,68,68,.18);border-radius:var(--r);font-size:11px;cursor:pointer;font-family:inherit;transition:all .13s;display:flex;align-items:center;justify-content:center;gap:5px}
+.sb-out:hover{background:rgba(239,68,68,.18)}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:51px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--s);flex-shrink:0}
+.tbtitle{font-size:14px;font-weight:600;color:#1a1d27;letter-spacing:-.2px}
+.content{flex:1;overflow-y:auto;padding:20px}
+.page{display:none}.page.active{display:block}
+/* BUTTONS */
+.btn{font-size:12px;padding:7px 14px;border-radius:var(--r);cursor:pointer;border:1px solid var(--b2);background:var(--s);color:#374151;transition:all .13s;font-family:inherit;font-weight:500;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{background:var(--s2);border-color:var(--b3)}
+.btn-p{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 8px rgba(79,110,247,.22)}
+.btn-p:hover{background:var(--acc2)}
+.btn-sm{font-size:10px;padding:4px 10px}
+.btn-g{background:transparent;border-color:transparent;color:var(--slate)}
+.btn-g:hover{background:var(--s2)}
+/* KPI */
+.kgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:16px}
+.kpi{background:var(--s);border-radius:var(--rl);padding:15px 17px;cursor:pointer;transition:all .15s;border:1px solid var(--b1);position:relative;overflow:hidden}
+.kpi:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(79,110,247,.1)}
+.kpi-ico{font-size:18px;margin-bottom:8px}
+.kpi-lbl{font-size:10px;color:var(--slate);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.kpi-val{font-size:21px;font-weight:700;color:#1a1d27;letter-spacing:-.4px}
+.kpi-sub{font-size:10px;color:var(--slate);margin-top:3px}
+.kpi-sub.up{color:var(--gt)}.kpi-sub.warn{color:var(--at)}
+/* CARD */
+.card{background:var(--s);border:1px solid var(--b1);border-radius:var(--rl);padding:17px;margin-bottom:14px}
+.ctitle{font-size:12px;font-weight:700;color:#1a1d27;margin-bottom:12px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.04em}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:9px;color:var(--slate);padding:5px 9px;border-bottom:1px solid var(--b1);text-align:left;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.tbl td{font-size:12px;color:#374151;padding:9px 9px;border-bottom:1px solid var(--b1)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover td{background:var(--s2)}
+.link{color:var(--accent);cursor:pointer;font-weight:500}
+.link:hover{text-decoration:underline}
+/* BADGES */
+.bdg{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:3px}
+.bdg-d{background:#f1f5f9;color:#475569}
+.bdg-s{background:var(--abg);color:var(--at)}
+.bdg-a{background:var(--gbg);color:var(--gt)}
+.bdg-r{background:var(--rbg);color:var(--rt)}
+.dot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0}
+/* PERIOD */
+.prow{display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.pfb{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--b2);background:var(--s);cursor:pointer;color:#374151;font-family:inherit;font-weight:500;transition:all .13s}
+.pfb:hover{border-color:var(--accent);color:var(--accent)}
+.pfb.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cdates{display:flex;align-items:center;gap:5px;margin-left:auto}
+.cdates input{font-size:11px;padding:5px 8px;border:1px solid var(--b2);border-radius:var(--r);background:var(--s);color:#374151;font-family:inherit;outline:none;width:120px}
+/* CHART */
+.bars{display:flex;align-items:flex-end;gap:5px;height:68px;padding-bottom:4px}
+.bcol{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.bfill{width:100%;border-radius:4px 4px 0 0;background:var(--acc-bg);border:1px solid var(--accent);opacity:.45;transition:all .2s;cursor:pointer}
+.bfill.active-b{opacity:1;background:var(--accent)}
+.bfill:hover{opacity:.75}
+.blbl{font-size:9px;color:var(--slate)}
+/* PROG */
+.prog{height:3px;background:var(--s2);border-radius:2px;margin:5px 0;overflow:hidden}
+.prog-f{height:100%;border-radius:2px;background:var(--accent)}
+/* EXPENSE LINES */
+.ew{overflow-x:auto}
+.ehdr,.eline{display:grid;grid-template-columns:88px 102px 72px 72px 68px 1fr 86px 24px;gap:5px;align-items:center;padding:6px 0}
+.ehdr{border-bottom:1px solid var(--b1);padding-bottom:7px;margin-bottom:1px}
+.ehdr span{font-size:9px;color:var(--slate);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.eline{border-bottom:1px solid var(--b1)}
+.eline:last-child{border-bottom:none}
+.ei{font-size:11px;padding:5px 7px;border:1px solid var(--b2);border-radius:var(--r);background:var(--s);color:#374151;font-family:inherit;outline:none;transition:border-color .13s;width:100%}
+.ei:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(79,110,247,.08)}
+.ei.tw{border-color:var(--red)!important;background:var(--rbg)}
+.es{font-size:11px;padding:5px 5px;border:1px solid var(--b2);border-radius:var(--r);background:var(--s);color:#374151;font-family:inherit;outline:none;width:100%}
+.es:focus{border-color:var(--accent)}
+.tc{font-size:11px;font-weight:700;color:#1a1d27;text-align:right;padding-right:2px}
+.delbtn{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;color:var(--red);font-size:12px;border-radius:4px;opacity:.35;font-family:inherit;flex-shrink:0;transition:all .12s}
+.delbtn:hover{opacity:1;background:var(--rbg)}
+.addl{font-size:11px;color:var(--accent);cursor:pointer;background:transparent;border:none;padding:7px 0;font-family:inherit;font-weight:500;display:flex;align-items:center;gap:4px}
+.attbtn{font-size:10px;padding:3px 7px;border:1px solid var(--b2);border-radius:var(--r);background:transparent;cursor:pointer;color:var(--slate);font-family:inherit;white-space:nowrap;transition:all .12s;display:flex;align-items:center;gap:3px}
+.attbtn:hover{background:var(--acc-bg);border-color:var(--accent);color:var(--acc-t)}
+.attbtn.hf{background:var(--acc-bg);border-color:var(--accent);color:var(--acc-t);font-weight:600}
+.totrow{display:flex;justify-content:flex-end;gap:22px;padding:11px 0 0;border-top:1px solid var(--b1);margin-top:7px}
+.ti{text-align:right}
+.tlbl{font-size:9px;color:var(--slate);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.tval{font-size:13px;font-weight:700;color:#1a1d27}
+.tval.main{font-size:18px;color:var(--accent)}
+/* TVA ALERT */
+.twa{background:var(--rbg);border:1px solid rgba(239,68,68,.25);border-radius:var(--r);padding:7px 11px;font-size:11px;color:var(--rt);margin:7px 0;display:none}
+.twa.show{display:block}
+/* FORMS */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg.full{grid-column:1/-1}
+.fg label{font-size:9px;color:var(--slate);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select,.fg textarea{font-size:12px;padding:8px 10px;border:1px solid var(--b2);border-radius:var(--r);background:var(--s);color:#374151;font-family:inherit;outline:none;transition:border-color .13s;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,110,247,.07)}
+.fg textarea{resize:vertical;min-height:58px}
+/* CREATE LAYOUT */
+.clayout{display:flex;height:100%}
+.cmain{flex:1;overflow-y:auto;padding:20px;min-width:0}
+.rpanel{width:0;overflow:hidden;transition:width .22s ease;background:var(--s);border-left:1px solid var(--b1);display:flex;flex-direction:column;flex-shrink:0}
+.rpanel.open{width:285px}
+.rph{padding:12px 15px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--s2)}
+.rpt{font-size:11px;font-weight:700;color:#1a1d27;text-transform:uppercase;letter-spacing:.04em}
+.rpc{background:transparent;border:none;cursor:pointer;color:var(--slate);font-size:15px;padding:0 2px;line-height:1;font-family:inherit;transition:color .12s}
+.rpc:hover{color:var(--red)}
+.rpb{flex:1;padding:13px;overflow-y:auto;display:flex;flex-direction:column;gap:9px}
+.udrop{border:1.5px dashed var(--b3);border-radius:var(--rl);padding:26px 14px;text-align:center;cursor:pointer;transition:all .15s}
+.udrop:hover{border-color:var(--accent);background:var(--acc-bg)}
+.udico{font-size:22px;margin-bottom:7px}
+.udtxt{font-size:11px;color:var(--slate);line-height:1.5}
+.udsub{font-size:10px;color:#9ca3af;margin-top:2px}
+/* VALIDATION */
+.rcard{background:var(--s);border:1px solid var(--b1);border-radius:var(--rl);padding:15px;margin-bottom:11px;transition:opacity .3s}
+.rcard.done{opacity:.38;pointer-events:none}
+.rvh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px}
+.rvn{font-size:13px;font-weight:600;color:#1a1d27}
+.rvm{font-size:10px;color:var(--slate);margin-top:2px}
+.rva{font-size:18px;font-weight:700;color:#1a1d27;text-align:right}
+.rvac{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
+.btn-app{background:var(--gbg);color:var(--gt);border-color:rgba(34,197,94,.25)}
+.btn-app:hover{background:#dcfce7}
+.btn-rej{background:var(--rbg);color:var(--rt);border-color:rgba(239,68,68,.25)}
+.btn-rej:hover{background:#fee2e2}
+.rjf{margin-top:9px;display:none}
+.rjf.open{display:block}
+.nbar{padding:9px 13px;border-radius:var(--r);margin-bottom:13px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:7px}
+.nb-p{background:var(--abg);color:var(--at);border:1px solid rgba(245,158,11,.18)}
+.nb-c{background:var(--gbg);color:var(--gt);border:1px solid rgba(34,197,94,.18)}
+/* MODAL */
+.mbd{display:none;position:absolute;inset:0;background:rgba(0,0,0,.38);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.mbd.open{display:flex}
+.modal{background:var(--s);border-radius:var(--rx);padding:22px;width:430px;max-width:92%;border:1px solid var(--b1);box-shadow:0 20px 60px rgba(0,0,0,.13)}
+.modal-t{font-size:14px;font-weight:700;color:#1a1d27;margin-bottom:16px;letter-spacing:-.2px}
+.modal-f{display:flex;justify-content:flex-end;gap:7px;margin-top:18px;padding-top:14px;border-top:1px solid var(--b1)}
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1a1d27;color:#fff;border-radius:var(--r);padding:9px 18px;font-size:12px;font-weight:500;opacity:0;transition:opacity .22s;pointer-events:none;z-index:9999;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="lcard">
+    <div class="llogo">
+      <div class="llogo-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="13" y2="13"/></svg></div>
+      <span class="llogo-text">NoteFrais</span>
+    </div>
+    <div class="ltag">Gestion des notes de frais</div>
+    <div class="lerr" id="lerr">Identifiants incorrects. Veuillez réessayer.</div>
+    <div class="lf"><label>Email</label><input type="email" id="lem" placeholder="prenom.nom@entreprise.fr" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="lf"><label>Mot de passe</label><input type="password" id="lpwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="lbtn" onclick="doLogin()">Se connecter →</button>
+    <div class="ldiv">Connexion rapide (démo)</div>
+    <div class="qaccs">
+      <div class="qacc" onclick="quickLogin('admin')">
+        <div class="qav" style="background:rgba(245,158,11,.2);color:#92400e">AB</div>
+        <div><div class="qname">Antoine BARBET</div><div class="qrole">Employé · Administrateur</div></div>
+        <span style="margin-left:auto;color:rgba(255,255,255,.2);font-size:11px">→</span>
+      </div>
+      <div class="qacc" onclick="quickLogin('val1')">
+        <div class="qav" style="background:rgba(79,110,247,.2);color:#2d46c4">AN</div>
+        <div><div class="qname">Amélie NUSSBAUM</div><div class="qrole">Employée · Valideur</div></div>
+        <span style="margin-left:auto;color:rgba(255,255,255,.2);font-size:11px">→</span>
+      </div>
+      <div class="qacc" onclick="quickLogin('val2')">
+        <div class="qav" style="background:rgba(34,197,94,.2);color:#15803d">DD</div>
+        <div><div class="qname">Damien DRILLET</div><div class="qrole">Employé · Valideur</div></div>
+        <span style="margin-left:auto;color:rgba(255,255,255,.2);font-size:11px">→</span>
+      </div>
+      <div class="qacc" onclick="quickLogin('emp')">
+        <div class="qav" style="background:#f1f5f9;color:#475569">AJ</div>
+        <div><div class="qname">Anaïs JOUET</div><div class="qrole">Employée</div></div>
+        <span style="margin-left:auto;color:rgba(255,255,255,.2);font-size:11px">→</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-screen">
+<div class="app" id="app">
+<div class="sb">
+  <div class="sb-brand">
+    <div class="sb-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="13" y2="13"/></svg></div>
+    <div><div class="sb-ttl">NoteFrais</div><div class="sb-v">v4.0</div></div>
+  </div>
+  <div style="flex:1;padding:6px 0;overflow-y:auto">
+    <div class="sb-sec">Principal</div>
+    <div class="sb-it active" onclick="nav('dashboard')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Tableau de bord
+    </div>
+    <div class="sb-it" onclick="nav('create')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Nouvelle note
+    </div>
+    <div class="sb-it" onclick="nav('list','all')">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="15" y2="18"/></svg>Mes notes
+    </div>
+    <div id="nav-val" style="display:none">
+      <div class="sb-sec">Validation</div>
+      <div class="sb-it" onclick="nav('validation')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>À valider
+        <span class="sb-bdg" id="pbadge">2</span>
+      </div>
+    </div>
+    <div id="nav-adm" style="display:none">
+      <div class="sb-sec">Administration</div>
+      <div class="sb-it" onclick="nav('users')">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M2 21v-1a7 7 0 0114 0v1"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>Utilisateurs
+      </div>
+      <div class="sb-it" onclick="nav('settings')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Paramètres
+      </div>
+    </div>
+  </div>
+  <div class="sb-bot">
+    <div class="sb-usr">
+      <div class="sb-av" id="sbav" style="background:rgba(245,158,11,.18);color:#92400e">AB</div>
+      <div><div class="sb-uname" id="sbname">Antoine BARBET</div><div class="sb-urole" id="sbrole">Administrateur</div></div>
+    </div>
+    <button class="sb-out" onclick="doLogout()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Déconnexion
+    </button>
+  </div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="tbtitle" id="tbtitle">Tableau de bord</div>
+    <button class="btn btn-p" onclick="nav('create')" style="font-size:11px;padding:6px 12px">+ Nouvelle note</button>
+  </div>
+  <div class="content" id="content">
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="prow">
+    <button class="pfb active" onclick="setPeriod('month',this)">Ce mois</button>
+    <button class="pfb" onclick="setPeriod('quarter',this)">Trimestre</button>
+    <button class="pfb" onclick="setPeriod('year',this)">Année</button>
+    <button class="pfb" onclick="setPeriod('custom',this)">Personnalisé</button>
+    <div class="cdates" id="cdates" style="display:none">
+      <input type="date" value="2025-01-01"><span style="font-size:11px;color:var(--slate)">→</span>
+      <input type="date" value="2025-03-31">
+      <button class="btn btn-p btn-sm" onclick="applyCustom()">OK</button>
+    </div>
+  </div>
+  <div class="kgrid">
+    <div class="kpi" onclick="nav('list','all')"><div class="kpi-ico">💶</div><div class="kpi-lbl" id="kpi-plbl">Total mars 2025</div><div class="kpi-val" id="kpi-tot">3 240 €</div><div class="kpi-sub up">↑ 8% vs période précédente</div></div>
+    <div class="kpi" onclick="nav('list','submitted')"><div class="kpi-ico">⏳</div><div class="kpi-lbl">En attente</div><div class="kpi-val" id="kpi-pend">2</div><div class="kpi-sub warn">À valider</div></div>
+    <div class="kpi" onclick="nav('list','approved')"><div class="kpi-ico">✅</div><div class="kpi-lbl">Validées</div><div class="kpi-val" id="kpi-app">14</div><div class="kpi-sub up">Ce trimestre</div></div>
+    <div class="kpi" onclick="nav('list','all')"><div class="kpi-ico">🧾</div><div class="kpi-lbl">TVA récupérable</div><div class="kpi-val" id="kpi-tva">412 €</div><div class="kpi-sub">Période sélectionnée</div></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <div class="ctitle">📈 Dépenses mensuelles</div>
+      <div class="bars">
+        <div class="bcol"><div class="bfill" style="height:44px"></div><div class="blbl">Oct</div></div>
+        <div class="bcol"><div class="bfill" style="height:60px"></div><div class="blbl">Nov</div></div>
+        <div class="bcol"><div class="bfill" style="height:36px"></div><div class="blbl">Déc</div></div>
+        <div class="bcol"><div class="bfill" style="height:54px"></div><div class="blbl">Jan</div></div>
+        <div class="bcol"><div class="bfill" style="height:46px"></div><div class="blbl">Fév</div></div>
+        <div class="bcol"><div class="bfill active-b" style="height:79px"></div><div class="blbl">Mar</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">🥧 Répartition</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="font-weight:500">Repas & Hébergement</span><span style="color:var(--slate)">44%</span></div><div class="prog"><div class="prog-f" style="width:44%"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="font-weight:500">Transport</span><span style="color:var(--slate)">33%</span></div><div class="prog"><div class="prog-f" style="width:33%;background:var(--green)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="font-weight:500">Fournitures</span><span style="color:var(--slate)">14%</span></div><div class="prog"><div class="prog-f" style="width:14%;background:var(--amber)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="font-weight:500">Autres</span><span style="color:var(--slate)">9%</span></div><div class="prog"><div class="prog-f" style="width:9%;background:#94a3b8"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">🕐 Activité récente</div>
+    <table class="tbl">
+      <thead><tr><th>Note de frais</th><th>Période</th><th style="text-align:right">TTC</th><th>Statut</th></tr></thead>
+      <tbody id="recent-body">
+        <tr><td colspan="4" style="text-align:center;color:var(--slate);padding:16px">Chargement…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- NOUVELLE NOTE -->
+<div class="page" id="page-create" style="padding:0;height:100%;display:none">
+  <div class="clayout" style="height:100%">
+    <div class="cmain">
+      <div class="card">
+        <div class="ctitle">📋 Informations générales</div>
+        <div class="fgrid">
+          <div class="fg full"><label>Intitulé *</label><input type="text" id="rtitle" placeholder="ex : Déplacement client — Paris, Avril 2025"></div>
+          <div class="fg"><label>Période de début</label><input type="date" id="pstart"></div>
+          <div class="fg"><label>Période de fin</label><input type="date" id="pend"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ctitle">💰 Lignes de dépenses</div>
+        <div class="ew">
+          <div class="ehdr"><span>Date</span><span>Catégorie</span><span>Montant HT</span><span>TVA (€ saisi)</span><span>TTC</span><span>Commentaire</span><span style="text-align:center">Justificatif</span><span></span></div>
+          <div id="elines"></div>
+        </div>
+        <div class="twa" id="twa">⚠ TVA supérieure à 20% du HT sur une ou plusieurs lignes.</div>
+        <button class="addl" onclick="addLine()">+ Ajouter une ligne</button>
+        <div class="totrow">
+          <div class="ti"><div class="tlbl">HT</div><div class="tval" id="tot-ht">—</div></div>
+          <div class="ti"><div class="tlbl">TVA</div><div class="tval" id="tot-tva">—</div></div>
+          <div class="ti"><div class="tlbl">TTC</div><div class="tval main" id="tot-ttc">—</div></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:7px;justify-content:flex-end;padding-bottom:20px">
+        <button class="btn btn-g" onclick="nav('list','all')">Annuler</button>
+        <button class="btn" onclick="saveDraft()">💾 Brouillon</button>
+        <button class="btn btn-p" onclick="submitReport()">Soumettre →</button>
+      </div>
+    </div>
+    <div class="rpanel" id="rpanel">
+      <div class="rph"><div class="rpt" id="rpt">Justificatif</div><button class="rpc" onclick="closeRP()">✕</button></div>
+      <div class="rpb" id="rpb"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MES NOTES -->
+<div class="page" id="page-list">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px">
+      <div class="ctitle" style="margin:0">📁 Mes notes de frais</div>
+      <select id="lfilter" style="font-size:11px;padding:5px 8px;border:1px solid var(--b2);border-radius:var(--r);background:var(--s);color:#374151;font-family:inherit;outline:none;width:auto" onchange="filterList()">
+        <option value="all">Tous les statuts</option><option value="draft">Brouillon</option><option value="submitted">Soumis</option><option value="approved">Validé</option><option value="rejected">Refusé</option>
+      </select>
+    </div>
+    <table class="tbl"><thead><tr><th>Intitulé</th><th>Période</th><th style="text-align:center">Lignes</th><th style="text-align:right">HT</th><th style="text-align:right">TVA</th><th style="text-align:right">TTC</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="lbody"></tbody></table>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div class="page" id="page-detail" style="padding:0;height:100%;display:none">
+  <div class="clayout" style="height:100%">
+    <div class="cmain">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
+        <button class="btn btn-g btn-sm" onclick="nav('list','all')">← Retour</button>
+        <div style="flex:1"><div id="det-title" style="font-size:15px;font-weight:700;color:#1a1d27;letter-spacing:-.2px"></div><div id="det-meta" style="font-size:11px;color:var(--slate);margin-top:2px"></div></div>
+        <span id="det-status" class="bdg"></span>
+      </div>
+      <div class="card">
+        <div class="ctitle">💰 Lignes de dépenses</div>
+        <div class="ew"><div class="ehdr"><span>Date</span><span>Catégorie</span><span>HT</span><span>TVA (€)</span><span>TTC</span><span>Commentaire</span><span style="text-align:center">Justificatif</span><span></span></div><div id="dlines"></div></div>
+        <div class="totrow">
+          <div class="ti"><div class="tlbl">HT</div><div class="tval" id="dht">—</div></div>
+          <div class="ti"><div class="tlbl">TVA</div><div class="tval" id="dtva">—</div></div>
+          <div class="ti"><div class="tlbl">TTC</div><div class="tval main" id="dttc">—</div></div>
+        </div>
+      </div>
+      <div id="det-rej" class="card" style="display:none;border-color:rgba(239,68,68,.3);background:var(--rbg)"><div style="font-size:11px;font-weight:700;color:var(--rt);margin-bottom:4px">Motif de refus</div><div id="det-rej-txt" style="font-size:12px;color:#374151"></div></div>
+    </div>
+    <div class="rpanel" id="det-rpanel">
+      <div class="rph"><div class="rpt" id="det-rpt">Justificatif</div><button class="rpc" onclick="document.getElementById('det-rpanel').classList.remove('open')">✕</button></div>
+      <div class="rpb" id="det-rpb"></div>
+    </div>
+  </div>
+</div>
+
+<!-- VALIDATION -->
+<div class="page" id="page-validation">
+  <div class="nbar nb-p" id="vnbar">⏳ 2 notes en attente de validation.</div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px">
+      <div class="ctitle" style="margin:0">📋 Notes à valider</div>
+      <select id="val-filter" style="font-size:11px;padding:5px 8px;border:1px solid var(--b2);border-radius:var(--r);background:var(--s);color:#374151;font-family:inherit;outline:none;width:auto" onchange="renderVal()">
+        <option value="pending">En attente</option>
+        <option value="all">Toutes (traitées incluses)</option>
+      </select>
+    </div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Note de frais</th>
+          <th>Employé</th>
+          <th>Soumis le</th>
+          <th>Lignes</th>
+          <th style="text-align:right">HT</th>
+          <th style="text-align:right">TVA</th>
+          <th style="text-align:right">TTC</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="val-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- VALIDATION DETAIL -->
+<div class="page" id="page-val-detail" style="padding:0;height:100%;display:none">
+  <div class="clayout" style="height:100%">
+    <div class="cmain">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
+        <button class="btn btn-g btn-sm" onclick="nav('validation')">← Retour</button>
+        <div style="flex:1">
+          <div id="vd-title" style="font-size:15px;font-weight:700;color:#1a1d27;letter-spacing:-.2px"></div>
+          <div id="vd-meta" style="font-size:11px;color:var(--slate);margin-top:2px"></div>
+        </div>
+        <span id="vd-status" class="bdg"></span>
+      </div>
+
+      <!-- INFO EMPLOYÉ -->
+      <div class="card" id="vd-employee-card">
+        <div class="ctitle">👤 Employé</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div id="vd-av" style="width:36px;height:36px;border-radius:50%;background:#f1f5f9;color:#475569;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0"></div>
+          <div>
+            <div id="vd-empname" style="font-size:13px;font-weight:600;color:#1a1d27"></div>
+            <div id="vd-empemail" style="font-size:11px;color:var(--slate);margin-top:1px"></div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div style="font-size:10px;color:var(--slate);text-transform:uppercase;letter-spacing:.04em;font-weight:600">Soumis le</div>
+            <div id="vd-date" style="font-size:12px;font-weight:500;color:#1a1d27"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIGNES DE DÉPENSES -->
+      <div class="card">
+        <div class="ctitle">💰 Lignes de dépenses</div>
+        <div class="ew">
+          <div class="ehdr"><span>Date</span><span>Catégorie</span><span>HT</span><span>TVA (€)</span><span>TTC</span><span>Commentaire</span><span style="text-align:center">Justificatif</span><span></span></div>
+          <div id="vd-lines"></div>
+        </div>
+        <div class="totrow">
+          <div class="ti"><div class="tlbl">HT</div><div class="tval" id="vd-ht">—</div></div>
+          <div class="ti"><div class="tlbl">TVA</div><div class="tval" id="vd-tva">—</div></div>
+          <div class="ti"><div class="tlbl">TTC</div><div class="tval main" id="vd-ttc">—</div></div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div id="vd-actions-card" class="card">
+        <div class="ctitle">⚡ Décision</div>
+        <div id="vd-done-msg" style="display:none;font-size:12px;color:var(--slate);padding:4px 0"></div>
+        <div id="vd-action-btns" style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-app" onclick="vdApprove()" style="font-size:12px;padding:8px 18px">✓ Valider cette note</button>
+          <button class="btn btn-rej" onclick="vdShowReject()" style="font-size:12px;padding:8px 18px">✕ Refuser</button>
+        </div>
+        <div id="vd-reject-form" style="display:none;margin-top:12px">
+          <label style="font-size:10px;color:var(--slate);font-weight:700;text-transform:uppercase;letter-spacing:.04em">Motif de refus *</label>
+          <textarea id="vd-reject-comment" placeholder="Expliquez le motif du refus à l'employé..." style="width:100%;margin-top:6px;font-size:12px;padding:9px 11px;border:1px solid var(--b2);border-radius:var(--r);font-family:inherit;resize:vertical;min-height:72px;outline:none"></textarea>
+          <div style="display:flex;gap:7px;margin-top:8px">
+            <button class="btn btn-rej" onclick="vdConfirmReject()" style="font-size:12px;padding:7px 16px">Confirmer le refus</button>
+            <button class="btn btn-g btn-sm" onclick="document.getElementById('vd-reject-form').style.display='none'">Annuler</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOLET JUSTIFICATIF -->
+    <div class="rpanel" id="vd-rpanel">
+      <div class="rph">
+        <div class="rpt" id="vd-rpt">Justificatif</div>
+        <button class="rpc" onclick="document.getElementById('vd-rpanel').classList.remove('open')">✕</button>
+      </div>
+      <div class="rpb" id="vd-rpb"></div>
+    </div>
+  </div>
+</div>
+
+<!-- USERS -->
+<div class="page" id="page-users">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px">
+      <div class="ctitle" style="margin:0">👥 Utilisateurs</div>
+      <button class="btn btn-p btn-sm" onclick="openUM(null)">+ Ajouter</button>
+    </div>
+    <table class="tbl"><thead><tr><th>Utilisateur</th><th>Email</th><th>Rôle</th><th>Valideur</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="ubody"></tbody></table>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="card"><div class="ctitle">⚙ Paramètres généraux</div>
+    <div class="fgrid">
+      <div class="fg"><label>Nom entreprise</label><input type="text" value="Mon Entreprise SAS"></div>
+      <div class="fg"><label>Devise</label><select><option>EUR — Euro (€)</option><option>USD — Dollar ($)</option></select></div>
+      <div class="fg"><label>Plafond repas (€ HT)</label><input type="number" value="25"></div>
+      <div class="fg"><label>Plafond hébergement (€ HT)</label><input type="number" value="150"></div>
+      <div class="fg full"><label>Politique</label><textarea>Les notes de frais doivent être soumises dans les 30 jours suivant la dépense.</textarea></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn btn-p btn-sm" onclick="showToast('✓ Paramètres sauvegardés')">Sauvegarder</button></div>
+  </div>
+  <div class="card"><div class="ctitle">📂 Catégories & plafonds</div>
+    <table class="tbl"><thead><tr><th>Catégorie</th><th>TVA défaut</th><th>Plafond HT</th><th>Statut</th></tr></thead>
+    <tbody>
+      <tr><td>Transport</td><td>20%</td><td>—</td><td><span class="bdg bdg-a"><span class="dot"></span>Actif</span></td></tr>
+      <tr><td>Repas</td><td>10%</td><td>25 €</td><td><span class="bdg bdg-a"><span class="dot"></span>Actif</span></td></tr>
+      <tr><td>Hébergement</td><td>20%</td><td>150 €</td><td><span class="bdg bdg-a"><span class="dot"></span>Actif</span></td></tr>
+      <tr><td>Fournitures</td><td>20%</td><td>—</td><td><span class="bdg bdg-a"><span class="dot"></span>Actif</span></td></tr>
+      <tr><td>Autre</td><td>20%</td><td>—</td><td><span class="bdg bdg-a"><span class="dot"></span>Actif</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+  </div></div>
+</div>
+
+<!-- MODAL UTILISATEUR -->
+<div class="mbd" id="umodal">
+  <div class="modal">
+    <div class="modal-t" id="mt">Nouvel utilisateur</div>
+    <div class="fgrid">
+      <div class="fg"><label>Prénom *</label><input type="text" id="ufn" placeholder="Prénom"></div>
+      <div class="fg"><label>Nom *</label><input type="text" id="uln" placeholder="NOM"></div>
+      <div class="fg full"><label>Email *</label><input type="email" id="uem" placeholder="prenom.nom@cie.fr"></div>
+      <div class="fg full">
+        <label>Rôles * (plusieurs possibles)</label>
+        <div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#374151;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400">
+            <input type="checkbox" id="role-employee" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer"> Employé(e)
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#374151;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400">
+            <input type="checkbox" id="role-validator" onchange="toggleVF()" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer"> Valideur
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#374151;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400">
+            <input type="checkbox" id="role-admin" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer"> Administrateur
+          </label>
+        </div>
+      </div>
+      <div class="fg" id="vfield"><label>Valideur rattaché</label><select id="uval"><option value="">— Aucun —</option><option value="Amélie NUSSBAUM">Amélie NUSSBAUM</option><option value="Damien DRILLET">Damien DRILLET</option><option value="Antoine BARBET">Antoine BARBET</option></select></div>
+      <div class="fg"><label>Statut</label><select id="ustatus"><option value="active">Actif</option><option value="inactive">Inactif</option></select></div>
+      <div class="fg full"><label>Mot de passe provisoire</label><input type="text" id="upwd" placeholder="Auto-généré si vide"></div>
+    </div>
+    <div class="modal-f"><button class="btn btn-g" onclick="closeUM()">Annuler</button><button class="btn btn-p" onclick="saveUser()">Enregistrer</button></div>
+  </div>
+</div>
+</div></div>
+<div class="toast" id="toast"></div>
+<script>
+/* AUTH */
+const ACCTS={
+  admin:{em:'a.barbet@corp.fr',    pw:'admin123',  name:'Antoine BARBET',  ini:'AB',role:'Admin · Valideur · Employé',type:'admin',    val:true, adm:true, avs:'background:rgba(245,158,11,.2);color:#92400e'},
+  val1: {em:'a.nussbaum@corp.fr',  pw:'valid123',  name:'Amélie NUSSBAUM', ini:'AN',role:'Valideur · Employée',       type:'validator',val:true, adm:false,avs:'background:rgba(79,110,247,.2);color:#2d46c4'},
+  val2: {em:'d.drillet@corp.fr',   pw:'valid123',  name:'Damien DRILLET',  ini:'DD',role:'Valideur · Employé',        type:'validator',val:true, adm:false,avs:'background:rgba(34,197,94,.2);color:#15803d'},
+  emp:  {em:'a.jouet@corp.fr',     pw:'employe123',name:'Anaïs JOUET',     ini:'AJ',role:'Employée',                  type:'employee', val:false,adm:false,avs:'background:#f1f5f9;color:#475569'},
+};
+let CU=null;
+function doLogin(){
+  const em=document.getElementById('lem').value.trim().toLowerCase();
+  const pw=document.getElementById('lpwd').value.trim();
+  const u=Object.values(ACCTS).find(a=>a.em===em&&a.pw===pw);
+  document.getElementById('lerr').classList.toggle('show',!u);
+  if(u)loginAs(u);
+}
+function quickLogin(k){loginAs(ACCTS[k]);}
+function loginAs(u){
+  CU=u;
+  document.getElementById('sbav').textContent=u.ini;
+  document.getElementById('sbav').setAttribute('style',u.avs+';width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0');
+  document.getElementById('sbname').textContent=u.name;
+  document.getElementById('sbrole').textContent=u.role;
+  document.getElementById('nav-val').style.display=u.val?'block':'none';
+  document.getElementById('nav-adm').style.display=u.adm?'block':'none';
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  nav('dashboard');
+  refreshDashboard();
+  showToast('👋 Bienvenue, '+u.name.split(' ')[0]+' !');
+}
+function doLogout(){
+  CU=null;
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('lem').value='';document.getElementById('lpwd').value='';
+}
+
+/* NAV */
+const PN={dashboard:'Tableau de bord',create:'Nouvelle note de frais',list:'Mes notes de frais',detail:'Détail de la note','val-detail':'Validation — Détail de la note',validation:'À valider',users:'Utilisateurs',settings:'Paramètres'};
+function nav(p,filter){
+  document.querySelectorAll('.page').forEach(x=>{x.classList.remove('active');x.style.display='none';});
+  document.querySelectorAll('.sb-it').forEach(x=>x.classList.remove('active'));
+  const el=document.getElementById('page-'+p);if(!el)return;
+  el.style.display=(p==='create'||p==='detail'||p==='val-detail')?'flex':'block';
+  el.classList.add('active');
+  document.getElementById('tbtitle').textContent=PN[p]||p;
+  document.querySelectorAll('.sb-it').forEach(i=>{if(i.getAttribute('onclick')?.includes("'"+p+"'"))i.classList.add('active');});
+  if(p==='val-detail')document.querySelectorAll('.sb-it').forEach(i=>{if(i.getAttribute('onclick')?.includes("'validation'"))i.classList.add('active');});
+  if(p==='list')renderList(filter||'all');
+  if(p==='dashboard')refreshDashboard();
+  if(p==='validation')renderVal();
+  if(p==='users')renderUsers();
+  if(p==='create')initForm();
+}
+
+/* PERIOD */
+const PD={
+  month:{l:'Mars 2025',t:'3 240 €',tva:'412 €',a:14},
+  quarter:{l:'T1 2025',t:'8 640 €',tva:'1 080 €',a:31},
+  year:{l:'Année 2025',t:'21 200 €',tva:'2 650 €',a:72},
+  custom:{l:'Personnalisé',t:'5 180 €',tva:'648 €',a:18},
+};
+function setPeriod(p,btn){
+  document.querySelectorAll('.pfb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('cdates').style.display=p==='custom'?'flex':'none';
+  if(p!=='custom')applyP(p);
+}
+function applyCustom(){applyP('custom');}
+function applyP(p){
+  const d=PD[p];
+  document.getElementById('kpi-plbl').textContent='Total — '+d.l;
+  document.getElementById('kpi-tot').textContent=d.t;
+  document.getElementById('kpi-tva').textContent=d.tva;
+  document.getElementById('kpi-app').textContent=d.a;
+  showToast('📅 '+d.l);
+}
+
+/* DATA */
+const cats=['Transport','Repas','Hébergement','Fournitures','Autre'];
+const BDG={
+  draft:'<span class="bdg bdg-d"><span class="dot"></span>Brouillon</span>',
+  submitted:'<span class="bdg bdg-s"><span class="dot"></span>Soumis</span>',
+  approved:'<span class="bdg bdg-a"><span class="dot"></span>Validé</span>',
+  rejected:'<span class="bdg bdg-r"><span class="dot"></span>Refusé</span>',
+};
+const SL={draft:'Brouillon',submitted:'Soumis',approved:'Validé',rejected:'Refusé'};
+const SC={draft:'bdg-d',submitted:'bdg-s',approved:'bdg-a',rejected:'bdg-r'};
+
+const reports=[
+  {id:1,title:'Déplacement Paris — Mars 2025',period:'10–12 mars',ht:345,tva:64.5,ttc:409.5,status:'draft',userId:'a.barbet@corp.fr',
+   lines:[{date:'2025-03-10',cat:'Transport',ht:120,tva:24,ttc:144,comment:'Train Paris A/R',receipt:null},{date:'2025-03-10',cat:'Repas',ht:55,tva:5.5,ttc:60.5,comment:'Déjeuner client',receipt:null},{date:'2025-03-11',cat:'Hébergement',ht:170,tva:34,ttc:204,comment:'Hôtel Mercure',receipt:null}]},
+  {id:2,title:'Déplacement Bordeaux — Mars 2025',period:'22–24 mars',ht:512,tva:102,ttc:614,status:'submitted',userId:'a.jouet@corp.fr',
+   lines:[{date:'2025-03-22',cat:'Transport',ht:260,tva:52,ttc:312,comment:'TGV Paris–Bordeaux',receipt:null},{date:'2025-03-22',cat:'Hébergement',ht:160,tva:32,ttc:192,comment:'Hôtel Burdigala',receipt:null},{date:'2025-03-23',cat:'Repas',ht:92,tva:18,ttc:110,comment:'Dîner équipe',receipt:null}]},
+  {id:3,title:'Séminaire Lyon — Mars 2025',period:'17–19 mars',ht:1240,tva:248,ttc:1488,status:'approved',userId:'a.nussbaum@corp.fr',
+   lines:[{date:'2025-03-17',cat:'Transport',ht:180,tva:36,ttc:216,comment:'Train A/R',receipt:null},{date:'2025-03-17',cat:'Hébergement',ht:420,tva:84,ttc:504,comment:'Ibis 2 nuits',receipt:null},{date:'2025-03-18',cat:'Repas',ht:320,tva:64,ttc:384,comment:'Repas séminaire',receipt:null},{date:'2025-03-19',cat:'Fournitures',ht:320,tva:64,ttc:384,comment:'Matériel atelier',receipt:null}]},
+  {id:4,title:'Repas client — Fév 2025',period:'28 fév',ht:156,tva:31,ttc:187,status:'approved',userId:'a.barbet@corp.fr',
+   lines:[{date:'2025-02-28',cat:'Repas',ht:156,tva:31,ttc:187,comment:'Déjeuner client Acme Corp',receipt:null}]},
+  {id:5,title:'Formation Paris — Fév 2025',period:'12–14 fév',ht:320,tva:64,ttc:384,status:'rejected',userId:'d.drillet@corp.fr',reviewComment:'Justificatifs manquants pour les repas.',
+   lines:[{date:'2025-02-12',cat:'Transport',ht:140,tva:28,ttc:168,comment:'Train A/R',receipt:null},{date:'2025-02-12',cat:'Repas',ht:180,tva:36,ttc:216,comment:'Repas formation',receipt:null}]},
+  {id:6,title:'Déplacement Marseille — Mars 2025',period:'15 mars',ht:210,tva:42,ttc:252,status:'draft',userId:'a.jouet@corp.fr',
+   lines:[{date:'2025-03-15',cat:'Transport',ht:210,tva:42,ttc:252,comment:'Avion Paris–Marseille',receipt:null}]},
+];
+
+/* FORM / EXPENSE LINES */
+let activeLID=null, lineRecs={}, editRID=null;
+
+function initForm(rid){
+  editRID=rid||null;
+  document.getElementById('elines').innerHTML='';
+  lineRecs={};activeLID=null;
+  document.getElementById('rpanel').classList.remove('open');
+  document.getElementById('twa').classList.remove('show');
+  document.getElementById('tot-ht').textContent='—';
+  document.getElementById('tot-tva').textContent='—';
+  document.getElementById('tot-ttc').textContent='—';
+  if(rid){
+    const r=reports.find(x=>x.id===rid);
+    if(r){document.getElementById('rtitle').value=r.title;document.getElementById('pstart').value=r.lines?.[0]?.date||'';document.getElementById('pend').value=r.lines?.[r.lines.length-1]?.date||'';(r.lines||[]).forEach(l=>addLine(l));return;}
+  }
+  document.getElementById('rtitle').value='';document.getElementById('pstart').value='';document.getElementById('pend').value='';
+  addLine();
+}
+
+function addLine(data){
+  const c=document.getElementById('elines');
+  const id='ln-'+Date.now()+'-'+Math.random().toString(36).slice(2,5);
+  const row=document.createElement('div');row.className='eline';row.id=id;
+  const co=cats.map(cat=>`<option${data&&data.cat===cat?' selected':''}>${cat}</option>`).join('');
+  row.innerHTML=`
+    <input class="ei" type="date" value="${data?.date||''}" oninput="calcTot()">
+    <select class="es" onchange="calcTot()">${co}</select>
+    <input class="ei" type="number" value="${data?.ht||''}" placeholder="0.00" step="0.01" oninput="calcTot()" style="text-align:right">
+    <input class="ei" type="number" value="${data?.tva||''}" placeholder="TVA €" step="0.01" oninput="chkTva(this,'${id}');calcTot()" data-tva style="text-align:right">
+    <div class="tc" data-ttc>${data?.ttc?data.ttc.toFixed(2)+' €':'—'}</div>
+    <input class="ei" type="text" value="${data?.comment||''}" placeholder="Commentaire...">
+    <button class="attbtn" id="att-${id}" onclick="openRP('${id}')">📎 Joindre</button>
+    <button class="delbtn" onclick="delLine('${id}')">✕</button>`;
+  c.appendChild(row);
+  if(data?.receipt){lineRecs[id]=data.receipt;const b=document.getElementById('att-'+id);if(b){b.textContent='✓ '+data.receipt.name.slice(0,12);b.classList.add('hf');}}
+  calcTot();
+}
+
+function delLine(id){document.getElementById(id)?.remove();delete lineRecs[id];if(activeLID===id)closeRP();calcTot();}
+
+function chkTva(inp,lid){
+  const row=document.getElementById(lid);if(!row)return;
+  const ht=parseFloat(row.querySelector('input[type="number"]')?.value)||0;
+  const tva=parseFloat(inp.value)||0;
+  const w=ht>0&&(tva/ht)*100>20.01;
+  inp.classList.toggle('tw',w);
+  document.getElementById('twa').classList.toggle('show',document.querySelectorAll('.tw').length>0);
+}
+
+function calcTot(){
+  let ht=0,tva=0;
+  document.querySelectorAll('#elines .eline').forEach(row=>{
+    const a=parseFloat(row.querySelector('input[type="number"]')?.value)||0;
+    const t=parseFloat(row.querySelector('[data-tva]')?.value)||0;
+    const el=row.querySelector('[data-ttc]');const ttc=a+t;
+    if(el)el.textContent=ttc>0?ttc.toFixed(2)+' €':'—';
+    ht+=a;tva+=t;
+  });
+  const f=v=>v>0?v.toFixed(2)+' €':'—';
+  document.getElementById('tot-ht').textContent=f(ht);
+  document.getElementById('tot-tva').textContent=f(tva);
+  document.getElementById('tot-ttc').textContent=f(ht+tva);
+}
+
+/* RECEIPT PANEL */
+function openRP(lid){
+  activeLID=lid;
+  const row=document.getElementById(lid);
+  const cat=row?.querySelector('select')?.value||'';
+  const date=row?.querySelector('input[type="date"]')?.value||'';
+  document.getElementById('rpt').textContent=(cat||'Ligne')+(date?' · '+date:'');
+  document.getElementById('rpanel').classList.add('open');
+  setTimeout(()=>renderRP(lid),40);
+}
+function closeRP(){activeLID=null;document.getElementById('rpanel').classList.remove('open');}
+
+function renderRP(lid){
+  const rec=lineRecs[lid];
+  const body=document.getElementById('rpb');if(!body)return;
+  if(!rec){
+    body.innerHTML=`<input type="file" id="fpicker" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFile(this)"><div class="udrop" onclick="document.getElementById('fpicker').click()"><div class="udico">📎</div><div class="udtxt">Cliquez pour joindre</div><div class="udsub">PDF, JPG, PNG — max 5 Mo</div></div>`;
+    return;
+  }
+  body.innerHTML='<input type="file" id="fpicker" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFile(this)">';
+  renderRecInto(body,rec,()=>document.getElementById('fpicker')?.click(),()=>{delete lineRecs[lid];const b=document.getElementById('att-'+lid);if(b){b.textContent='📎 Joindre';b.classList.remove('hf');}renderRP(lid);},lid);
+}
+
+function renderRecInto(bodyEl,rec,onRep,onDel,lid){
+  const sz=rec.size?(rec.size/1024).toFixed(0)+' Ko':'';
+  const wrap=document.createElement('div');
+  if(rec.type==='img'&&rec.dataUrl){
+    const img=document.createElement('img');img.src=rec.dataUrl;
+    img.style.cssText='width:100%;max-height:260px;object-fit:contain;border-radius:var(--r);border:1px solid var(--b1);background:var(--s2);display:block';
+    wrap.appendChild(img);
+  }else if(rec.type==='pdf'&&rec.dataUrl){
+    const canId='cv-'+Date.now();
+    const cw=document.createElement('div');cw.style.cssText='background:var(--s2);border-radius:var(--r);border:1px solid var(--b1);overflow:hidden;min-height:140px;display:flex;align-items:center;justify-content:center';
+    const cv=document.createElement('canvas');cv.id=canId;cv.style.maxWidth='100%';
+    cw.appendChild(cv);wrap.appendChild(cw);renderPDF(rec.dataUrl,canId);
+  }else{
+    const pl=document.createElement('div');pl.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:28px;background:var(--s2);border-radius:var(--r)';
+    pl.innerHTML=`<div style="font-size:28px">📄</div><div style="font-size:11px;color:var(--slate);word-break:break-all;text-align:center">${rec.name}</div>`;
+    wrap.appendChild(pl);
+  }
+  const meta=document.createElement('div');meta.style.cssText='margin-top:9px;display:flex;flex-direction:column;gap:3px';
+  meta.innerHTML=`<div style="font-size:11px;font-weight:700;color:#1a1d27;word-break:break-all">${rec.name}</div><div style="font-size:10px;color:var(--slate)">${sz}${sz?' · ':''}${rec.type.toUpperCase()}</div>`;
+  wrap.appendChild(meta);
+  const acts=document.createElement('div');acts.style.cssText='display:flex;gap:5px;margin-top:8px;flex-wrap:wrap';
+  const dl=document.createElement('button');dl.className='btn btn-sm';dl.style.flex='1';dl.innerHTML='⬇ Télécharger';
+  dl.onclick=()=>{const a=document.createElement('a');a.href=rec.dataUrl;a.download=rec.name;a.click();};
+  acts.appendChild(dl);
+  if(onRep){const b=document.createElement('button');b.className='btn btn-sm';b.style.flex='1';b.textContent='Remplacer';b.onclick=onRep;acts.appendChild(b);}
+  if(onDel){const b=document.createElement('button');b.className='btn btn-sm';b.style.cssText='flex:1;color:var(--rt);border-color:rgba(239,68,68,.25)';b.textContent='Supprimer';b.onclick=onDel;acts.appendChild(b);}
+  wrap.appendChild(acts);bodyEl.appendChild(wrap);
+  if(lid){const btn=document.getElementById('att-'+lid);if(btn){const sh=rec.name.length>14?rec.name.slice(0,14)+'…':rec.name;btn.textContent='✓ '+sh;btn.classList.add('hf');}}
+}
+
+function handleFile(input){
+  if(!input.files?.[0]||!activeLID)return;
+  const file=input.files[0];const lid=activeLID;
+  const ext=file.name.split('.').pop().toLowerCase();
+  const type=['jpg','jpeg','png','gif','webp'].includes(ext)?'img':'pdf';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    lineRecs[lid]={name:file.name,type,size:file.size,dataUrl:e.target.result};
+    if(activeLID===lid)renderRP(lid);
+    const b=document.getElementById('att-'+lid);
+    if(b){const sh=file.name.length>14?file.name.slice(0,14)+'…':file.name;b.textContent='✓ '+sh;b.classList.add('hf');}
+    showToast('📎 "'+file.name+'" joint');
+  };
+  reader.readAsDataURL(file);input.value='';
+}
+
+/* PDF.js */
+function renderPDF(dataUrl,canvasId){
+  const go=()=>{
+    const b64=dataUrl.split(',')[1];const bin=atob(b64);const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    pdfjsLib.getDocument({data:bytes}).promise.then(pdf=>{
+      pdf.getPage(1).then(page=>{
+        const cv=document.getElementById(canvasId);if(!cv)return;
+        const w=cv.parentElement?.clientWidth||230;const vp=page.getViewport({scale:1});
+        const sc=(w-4)/vp.width;const sv=page.getViewport({scale:sc});
+        cv.width=sv.width;cv.height=sv.height;
+        page.render({canvasContext:cv.getContext('2d'),viewport:sv});
+      });
+    }).catch(()=>{const cv=document.getElementById(canvasId);if(cv)cv.parentElement.innerHTML='<div style="padding:14px;font-size:11px;color:var(--slate);text-align:center">Aperçu indisponible</div>';});
+  };
+  if(typeof pdfjsLib==='undefined'){
+    const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload=()=>{pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';go();};
+    document.head.appendChild(s);
+  }else{go();}
+}
+
+/* SUBMIT */
+function getPeriodLabel(){
+  const s=document.getElementById('pstart')?.value;
+  const e=document.getElementById('pend')?.value;
+  if(!s&&!e)return new Date().toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+  const fmt=d=>new Date(d).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+  return s===e||!e ? fmt(s) : fmt(s)+' – '+fmt(e);
+}
+
+function saveReport(targetStatus){
+  const title=document.getElementById('rtitle').value.trim();
+  if(!title){showToast('⚠ Veuillez saisir un intitulé');return false;}
+  if(targetStatus==='submitted'&&document.querySelectorAll('.tw').length>0&&!confirm('TVA > 20% sur certaines lignes. Confirmer ?'))return false;
+  const lines=collectLines();
+  const ht=lines.reduce((s,l)=>s+l.ht,0),tva=lines.reduce((s,l)=>s+l.tva,0);
+  const period=getPeriodLabel();
+  if(editRID){
+    const r=reports.find(x=>x.id===editRID);
+    if(r){r.title=title;r.status=targetStatus;r.lines=lines;r.ht=ht;r.tva=tva;r.ttc=ht+tva;r.period=period;}
+  }else{
+    reports.unshift({id:Date.now(),title,period,ht,tva,ttc:ht+tva,status:targetStatus,userId:CU?.em,lines});
+    if(targetStatus==='submitted'){const b=document.getElementById('pbadge');b.textContent=parseInt(b.textContent)+1;}
+  }
+  return true;
+}
+
+function saveDraft(){
+  if(!saveReport('draft'))return;
+  showToast('💾 Brouillon enregistré');
+  refreshDashboard();
+  setTimeout(()=>nav('list','all'),600);
+}
+
+function submitReport(){
+  if(!saveReport('submitted'))return;
+  showToast('✓ Note soumise au valideur');
+  refreshDashboard();
+  setTimeout(()=>nav('list','all'),700);
+}
+function collectLines(){
+  const ls=[];
+  document.querySelectorAll('#elines .eline').forEach(row=>{
+    const date=row.querySelector('input[type="date"]')?.value||'';
+    const cat=row.querySelector('select')?.value||'';
+    const ht=parseFloat(row.querySelector('input[type="number"]')?.value)||0;
+    const tva=parseFloat(row.querySelector('[data-tva]')?.value)||0;
+    const comment=row.querySelector('input[type="text"]')?.value||'';
+    ls.push({date,cat,ht,tva,ttc:ht+tva,comment,receipt:lineRecs[row.id]?{...lineRecs[row.id]}:null});
+  });
+  return ls;
+}
+
+/* LIST — scoped to current user */
+function myReports(){return reports.filter(r=>r.userId===CU?.em);}
+
+function renderList(filter){const s=document.getElementById('lfilter');if(s&&filter)s.value=filter;filterList();}
+function filterList(){
+  const f=document.getElementById('lfilter')?.value||'all';
+  const base=myReports();
+  const fil=f==='all'?base:base.filter(r=>r.status===f);
+  document.getElementById('lbody').innerHTML=fil.map(r=>`<tr>
+    <td><span class="link" onclick="showDetail(${r.id})">${r.title}</span></td>
+    <td style="color:var(--slate)">${r.period}</td>
+    <td style="text-align:center;color:var(--slate)">${r.lines?.length||0}</td>
+    <td style="text-align:right">${r.ht.toFixed(2)} €</td>
+    <td style="text-align:right">${r.tva.toFixed(2)} €</td>
+    <td style="text-align:right;font-weight:700">${r.ttc.toFixed(2)} €</td>
+    <td>${BDG[r.status]||''}</td>
+    <td>${r.status==='draft'?`<button class="btn btn-sm" onclick="editReport(${r.id})">✏ Modifier</button>`:`<button class="btn btn-sm" onclick="showDetail(${r.id})">Voir</button>`}</td>
+  </tr>`).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--slate);padding:18px">Aucune note de frais pour ce compte.</td></tr>';
+}
+
+/* DASHBOARD — dynamic, scoped to current user */
+function refreshDashboard(){
+  const mine=myReports();
+  const totalTTC=mine.filter(r=>r.status==='approved').reduce((s,r)=>s+r.ttc,0);
+  const totalTVA=mine.filter(r=>r.status==='approved').reduce((s,r)=>s+r.tva,0);
+  const pending=mine.filter(r=>r.status==='submitted').length;
+  const approved=mine.filter(r=>r.status==='approved').length;
+  // KPIs
+  const kpiTot=document.getElementById('kpi-tot');if(kpiTot)kpiTot.textContent=totalTTC.toLocaleString('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+  const kpiPend=document.getElementById('kpi-pend');if(kpiPend)kpiPend.textContent=pending;
+  const kpiApp=document.getElementById('kpi-app');if(kpiApp)kpiApp.textContent=approved;
+  const kpiTva=document.getElementById('kpi-tva');if(kpiTva)kpiTva.textContent=totalTVA.toLocaleString('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+  // Recent activity table
+  const tbody=document.getElementById('recent-body');
+  if(!tbody)return;
+  const recent=mine.slice(0,5);
+  if(recent.length===0){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--slate);padding:16px">Aucune note de frais</td></tr>';return;}
+  tbody.innerHTML=recent.map(r=>`<tr>
+    <td><span class="link" onclick="showDetail(${r.id})">${r.title}</span></td>
+    <td style="color:var(--slate)">${r.period}</td>
+    <td style="text-align:right;font-weight:700">${r.ttc.toFixed(2)} €</td>
+    <td>${BDG[r.status]||''}</td>
+  </tr>`).join('');
+}
+
+/* EDIT — FIX: properly pre-fill form */
+function editReport(id){
+  nav('create');
+  setTimeout(()=>initForm(id),60);
+}
+
+/* DETAIL */
+function showDetail(id){
+  const r=reports.find(x=>x.id===id);if(!r)return;
+  document.getElementById('det-title').textContent=r.title;
+  document.getElementById('det-meta').textContent=r.period+' · '+(r.lines?.length||0)+' ligne(s)';
+  const se=document.getElementById('det-status');se.className='bdg '+SC[r.status];se.innerHTML='<span class="dot"></span>'+SL[r.status];
+  document.getElementById('dht').textContent=r.ht.toFixed(2)+' €';
+  document.getElementById('dtva').textContent=r.tva.toFixed(2)+' €';
+  document.getElementById('dttc').textContent=r.ttc.toFixed(2)+' €';
+  const rb=document.getElementById('det-rej');
+  if(r.status==='rejected'&&r.reviewComment){rb.style.display='block';document.getElementById('det-rej-txt').textContent=r.reviewComment;}else{rb.style.display='none';}
+  document.getElementById('dlines').innerHTML=(r.lines||[]).map((l,idx)=>{
+    const hr=!!l.receipt;
+    const btn=hr?`<button class="attbtn hf" onclick="openDetRec(${id},${idx},'${l.cat}','${l.date}')">✓ Voir</button>`:'<span style="font-size:10px;color:#9ca3af">—</span>';
+    return `<div class="eline" style="grid-template-columns:88px 102px 72px 72px 68px 1fr 86px 0px">
+      <span style="font-size:11px;color:var(--slate)">${l.date}</span><span style="font-size:11px">${l.cat}</span>
+      <span style="font-size:11px;text-align:right">${l.ht.toFixed(2)} €</span><span style="font-size:11px;text-align:right">${l.tva.toFixed(2)} €</span>
+      <span style="font-size:11px;font-weight:700;text-align:right">${l.ttc.toFixed(2)} €</span>
+      <span style="font-size:11px;color:var(--slate)">${l.comment}</span>
+      <div style="text-align:center">${btn}</div><div></div></div>`;
+  }).join('');
+  document.getElementById('det-rpanel').classList.remove('open');
+  nav('detail');
+}
+
+function openDetRec(rid,idx,cat,date){
+  const r=reports.find(x=>x.id===rid);if(!r?.lines)return;
+  const rec=r.lines[idx]?.receipt;
+  document.getElementById('det-rpt').textContent=cat+(date?' · '+date:'');
+  const body=document.getElementById('det-rpb');body.innerHTML='';
+  if(!rec){body.innerHTML='<div style="padding:18px;text-align:center;font-size:11px;color:var(--slate)">Aucun justificatif joint</div>';}
+  else{renderRecInto(body,rec,null,null,null);}
+  document.getElementById('det-rpanel').classList.add('open');
+}
+
+/* VALIDATION */
+const vr=[
+  {id:'v1',
+   title:'Déplacement Bordeaux — Mars 2025',
+   empName:'Anaïs JOUET', empEmail:'a.jouet@corp.fr', empIni:'AJ',
+   submittedOn:'24 mars 2025', period:'22–24 mars',
+   ht:512, tva:102, ttc:614, status:'pending',
+   lines:[
+     {date:'2025-03-22',cat:'Transport',   ht:260, tva:52, ttc:312, comment:'TGV Paris–Bordeaux A/R', receipt:null},
+     {date:'2025-03-22',cat:'Hébergement', ht:160, tva:32, ttc:192, comment:'Hôtel Burdigala',        receipt:null},
+     {date:'2025-03-23',cat:'Repas',       ht:92,  tva:18, ttc:110, comment:'Dîner équipe projet',    receipt:null},
+   ]},
+  {id:'v2',
+   title:'Fournitures bureau — Mars 2025',
+   empName:'Antoine BARBET', empEmail:'a.barbet@corp.fr', empIni:'AB',
+   submittedOn:'20 mars 2025', period:'20 mars',
+   ht:99, tva:20, ttc:119, status:'pending',
+   lines:[
+     {date:'2025-03-20',cat:'Fournitures', ht:99, tva:20, ttc:119, comment:'Ramettes papier + cartouches imprimante', receipt:null},
+   ]},
+  {id:'v3',
+   title:'Séminaire Nantes — Fév 2025',
+   empName:'Anaïs JOUET', empEmail:'a.jouet@corp.fr', empIni:'AJ',
+   submittedOn:'3 mars 2025', period:'24–26 fév',
+   ht:880, tva:176, ttc:1056, status:'approved', doneMsg:'✓ Validée le 4 mars 2025',
+   lines:[
+     {date:'2025-02-24',cat:'Transport',   ht:220, tva:44, ttc:264, comment:'Train Paris–Nantes A/R', receipt:null},
+     {date:'2025-02-24',cat:'Hébergement', ht:360, tva:72, ttc:432, comment:'Hôtel Mercure 2 nuits',  receipt:null},
+     {date:'2025-02-25',cat:'Repas',       ht:300, tva:60, ttc:360, comment:'Repas séminaire ×2',     receipt:null},
+   ]},
+];
+let currentVR=null; // note en cours de validation dans le volet détail
+
+function renderVal(){
+  const f=document.getElementById('val-filter')?.value||'pending';
+  const filtered=f==='all'?vr:vr.filter(r=>r.status==='pending');
+  const pend=vr.filter(r=>r.status==='pending').length;
+  const nb=document.getElementById('vnbar');
+  nb.className='nbar '+(pend>0?'nb-p':'nb-c');
+  nb.textContent=pend>0?`⏳ ${pend} note${pend>1?'s':''} en attente de validation.`:'✓ Aucune note en attente. Tout est à jour !';
+
+  const body=document.getElementById('val-body');
+  if(!filtered.length){
+    body.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--slate);padding:20px">Aucune note à afficher</td></tr>';
+    return;
+  }
+  body.innerHTML=filtered.map(r=>{
+    const isPend=r.status==='pending';
+    const sbdg=isPend
+      ?'<span class="bdg bdg-s"><span class="dot"></span>En attente</span>'
+      :r.status==='approved'
+        ?'<span class="bdg bdg-a"><span class="dot"></span>Validé</span>'
+        :'<span class="bdg bdg-r"><span class="dot"></span>Refusé</span>';
+    const actions=isPend
+      ?`<div style="display:flex;gap:5px">
+          <button class="btn btn-sm btn-app" onclick="event.stopPropagation();quickApprove('${r.id}')">✓</button>
+          <button class="btn btn-sm btn-rej" onclick="event.stopPropagation();openValDetail('${r.id}')">Voir →</button>
+        </div>`
+      :`<button class="btn btn-sm btn-g" onclick="openValDetail('${r.id}')">Voir</button>`;
+    return `<tr style="cursor:pointer" onclick="openValDetail('${r.id}')">
+      <td><span class="link">${r.title}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:7px">
+          <div style="width:22px;height:22px;border-radius:50%;background:#f1f5f9;color:#475569;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${r.empIni}</div>
+          <span style="font-size:11px">${r.empName}</span>
+        </div>
+      </td>
+      <td style="color:var(--slate);font-size:11px">${r.submittedOn}</td>
+      <td style="text-align:center;color:var(--slate)">${r.lines.length}</td>
+      <td style="text-align:right">${r.ht.toFixed(2)} €</td>
+      <td style="text-align:right">${r.tva.toFixed(2)} €</td>
+      <td style="text-align:right;font-weight:700">${r.ttc.toFixed(2)} €</td>
+      <td>${sbdg}</td>
+      <td onclick="event.stopPropagation()">${actions}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Validation rapide depuis le tableau (bouton ✓)
+function quickApprove(id){
+  const r=vr.find(x=>x.id===id);if(!r)return;
+  r.status='approved';r.doneMsg='✓ Validée le '+new Date().toLocaleDateString('fr-FR');
+  updBdg();renderVal();showToast('✓ Note validée');
+}
+
+function updBdg(){document.getElementById('pbadge').textContent=vr.filter(r=>r.status==='pending').length;}
+
+// Ouverture de la page détail validation
+function openValDetail(id){
+  const r=vr.find(x=>x.id===id);if(!r)return;
+  currentVR=r;
+
+  document.getElementById('vd-title').textContent=r.title;
+  document.getElementById('vd-meta').textContent=r.period+' · '+r.lines.length+' ligne(s) · Soumis le '+r.submittedOn;
+
+  const se=document.getElementById('vd-status');
+  if(r.status==='pending'){se.className='bdg bdg-s';se.innerHTML='<span class="dot"></span>En attente';}
+  else if(r.status==='approved'){se.className='bdg bdg-a';se.innerHTML='<span class="dot"></span>Validé';}
+  else{se.className='bdg bdg-r';se.innerHTML='<span class="dot"></span>Refusé';}
+
+  // Employé
+  document.getElementById('vd-av').textContent=r.empIni;
+  document.getElementById('vd-empname').textContent=r.empName;
+  document.getElementById('vd-empemail').textContent=r.empEmail;
+  document.getElementById('vd-date').textContent=r.submittedOn;
+
+  // Totaux
+  document.getElementById('vd-ht').textContent=r.ht.toFixed(2)+' €';
+  document.getElementById('vd-tva').textContent=r.tva.toFixed(2)+' €';
+  document.getElementById('vd-ttc').textContent=r.ttc.toFixed(2)+' €';
+
+  // Lignes
+  document.getElementById('vd-lines').innerHTML=r.lines.map((l,idx)=>{
+    const hasRec=!!l.receipt;
+    const btn=hasRec
+      ?`<button class="attbtn hf" onclick="openVdRec('${id}',${idx},'${l.cat}','${l.date}')">✓ Voir</button>`
+      :'<span style="font-size:10px;color:#9ca3af">—</span>';
+    return `<div class="eline" style="grid-template-columns:88px 102px 72px 72px 68px 1fr 86px 0px">
+      <span style="font-size:11px;color:var(--slate)">${l.date}</span>
+      <span style="font-size:11px">${l.cat}</span>
+      <span style="font-size:11px;text-align:right">${l.ht.toFixed(2)} €</span>
+      <span style="font-size:11px;text-align:right">${l.tva.toFixed(2)} €</span>
+      <span style="font-size:11px;font-weight:700;text-align:right">${l.ttc.toFixed(2)} €</span>
+      <span style="font-size:11px;color:var(--slate)">${l.comment}</span>
+      <div style="text-align:center">${btn}</div>
+      <div></div>
+    </div>`;
+  }).join('');
+
+  // Actions
+  const actCard=document.getElementById('vd-actions-card');
+  const btns=document.getElementById('vd-action-btns');
+  const doneMsg=document.getElementById('vd-done-msg');
+  const rejectForm=document.getElementById('vd-reject-form');
+  document.getElementById('vd-reject-comment').value='';
+  rejectForm.style.display='none';
+
+  if(r.status==='pending'){
+    btns.style.display='flex';doneMsg.style.display='none';actCard.style.display='block';
+  }else{
+    btns.style.display='none';
+    doneMsg.style.display='block';
+    doneMsg.textContent=r.doneMsg||'';
+    actCard.style.display='block';
+  }
+
+  document.getElementById('vd-rpanel').classList.remove('open');
+  nav('val-detail');
+}
+
+function vdApprove(){
+  if(!currentVR||currentVR.status!=='pending')return;
+  currentVR.status='approved';
+  currentVR.doneMsg='✓ Validée le '+new Date().toLocaleDateString('fr-FR');
+  updBdg();
+  showToast('✓ Note validée — '+currentVR.empName+' notifié(e)');
+  // Refresh the status in the detail view
+  openValDetail(currentVR.id);
+}
+
+function vdShowReject(){
+  document.getElementById('vd-reject-form').style.display='block';
+  document.getElementById('vd-reject-comment').focus();
+}
+
+function vdConfirmReject(){
+  const comment=document.getElementById('vd-reject-comment').value.trim();
+  const ta=document.getElementById('vd-reject-comment');
+  if(!comment){ta.style.borderColor='var(--red)';showToast('⚠ Le motif de refus est obligatoire');return;}
+  ta.style.borderColor='';
+  if(!currentVR||currentVR.status!=='pending')return;
+  currentVR.status='rejected';
+  currentVR.doneMsg='✗ Refusée le '+new Date().toLocaleDateString('fr-FR')+' — '+comment;
+  updBdg();
+  showToast('Note refusée — '+currentVR.empName+' notifié(e)');
+  openValDetail(currentVR.id);
+}
+
+function openVdRec(vrId,lineIdx,cat,date){
+  const r=vr.find(x=>x.id===vrId);if(!r?.lines)return;
+  const rec=r.lines[lineIdx]?.receipt;
+  document.getElementById('vd-rpt').textContent=cat+(date?' · '+date:'');
+  const body=document.getElementById('vd-rpb');body.innerHTML='';
+  if(!rec){body.innerHTML='<div style="padding:18px;text-align:center;font-size:11px;color:var(--slate)">Aucun justificatif joint</div>';}
+  else{renderRecInto(body,rec,null,null,null);}
+  document.getElementById('vd-rpanel').classList.add('open');
+}
+
+/* USERS */
+// roles est un tableau : ['employee','validator','admin']
+const ud=[
+  {id:1,fn:'Antoine',ln:'BARBET',  em:'a.barbet@corp.fr',   roles:['employee','validator','admin'], val:'',                status:'active'},
+  {id:2,fn:'Amélie', ln:'NUSSBAUM',em:'a.nussbaum@corp.fr', roles:['employee','validator'],         val:'',                status:'active'},
+  {id:3,fn:'Damien', ln:'DRILLET', em:'d.drillet@corp.fr',  roles:['employee','validator'],         val:'',                status:'active'},
+  {id:4,fn:'Anaïs',  ln:'JOUET',   em:'a.jouet@corp.fr',    roles:['employee'],                     val:'Amélie NUSSBAUM', status:'active'},
+];
+let eUID=null;
+
+const ROLE_LBL={'employee':'Employé(e)','validator':'Valideur','admin':'Administrateur'};
+const ROLE_COLORS={'employee':'bdg-d','validator':'bdg-s','admin':'bdg-a'};
+// Couleur avatar basée sur le rôle le plus élevé
+function avColorForRoles(roles){
+  if(roles.includes('admin'))   return 'background:rgba(245,158,11,.15);color:#92400e';
+  if(roles.includes('validator'))return 'background:rgba(79,110,247,.15);color:#2d46c4';
+  return 'background:#f1f5f9;color:#475569';
+}
+
+function renderUsers(){
+  document.getElementById('ubody').innerHTML=ud.map(u=>{
+    const ini=(u.fn[0]+u.ln[0]).toUpperCase();
+    const sc=u.status==='active'?'bdg-a':'bdg-r';
+    const sl=u.status==='active'?'Actif':'Inactif';
+    const rolesBadges=(u.roles||['employee']).map(r=>`<span class="bdg ${ROLE_COLORS[r]}" style="margin-right:3px">${ROLE_LBL[r]}</span>`).join('');
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:7px">
+        <div style="width:24px;height:24px;border-radius:50%;${avColorForRoles(u.roles||[])};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${ini}</div>
+        <div style="font-size:12px;font-weight:600;color:#1a1d27">${u.fn} ${u.ln}</div>
+      </div></td>
+      <td style="color:var(--slate);font-size:11px">${u.em}</td>
+      <td style="white-space:nowrap">${rolesBadges}</td>
+      <td style="font-size:11px;color:var(--slate)">${u.val||'—'}</td>
+      <td><span class="bdg ${sc}"><span class="dot"></span>${sl}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm" onclick="openUM(${u.id})" style="margin-right:4px">Modifier</button>
+        <button class="btn btn-sm" style="color:var(--rt);border-color:rgba(239,68,68,.25)" onclick="tgStatus(${u.id})">${u.status==='active'?'Désactiver':'Activer'}</button>
+      </td></tr>`;
+  }).join('');
+}
+
+function tgStatus(id){const u=ud.find(x=>x.id===id);if(!u)return;u.status=u.status==='active'?'inactive':'active';renderUsers();showToast('Statut mis à jour');}
+
+function openUM(id){
+  eUID=id;
+  document.getElementById('mt').textContent=id?"Modifier l'utilisateur":'Nouvel utilisateur';
+  // Reset checkboxes
+  ['employee','validator','admin'].forEach(r=>document.getElementById('role-'+r).checked=false);
+  if(id){
+    const u=ud.find(x=>x.id===id);
+    if(u){
+      document.getElementById('ufn').value=u.fn;
+      document.getElementById('uln').value=u.ln;
+      document.getElementById('uem').value=u.em;
+      (u.roles||[]).forEach(r=>{const el=document.getElementById('role-'+r);if(el)el.checked=true;});
+      document.getElementById('uval').value=u.val||'';
+      document.getElementById('ustatus').value=u.status;
+      document.getElementById('upwd').value='';
+    }
+  }else{
+    ['ufn','uln','uem','upwd'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('role-employee').checked=true;
+    document.getElementById('uval').value='';
+    document.getElementById('ustatus').value='active';
+  }
+  toggleVF();
+  document.getElementById('umodal').classList.add('open');
+}
+
+function closeUM(){document.getElementById('umodal').classList.remove('open');eUID=null;}
+
+function toggleVF(){
+  // Afficher "Valideur rattaché" seulement si l'utilisateur est employé sans être lui-même valideur ou admin
+  const isVal=document.getElementById('role-validator')?.checked;
+  const isAdm=document.getElementById('role-admin')?.checked;
+  document.getElementById('vfield').style.display=(!isVal&&!isAdm)?'flex':'none';
+}
+
+function saveUser(){
+  const fn=document.getElementById('ufn').value.trim();
+  const ln=document.getElementById('uln').value.trim();
+  const em=document.getElementById('uem').value.trim();
+  if(!fn||!ln||!em){showToast('⚠ Prénom, nom et email requis');return;}
+  const roles=['employee','validator','admin'].filter(r=>document.getElementById('role-'+r).checked);
+  if(roles.length===0){showToast('⚠ Sélectionnez au moins un rôle');return;}
+  const val=document.getElementById('uval').value;
+  const status=document.getElementById('ustatus').value;
+  const obj={fn,ln,em,roles,val,status};
+  if(eUID){
+    const u=ud.find(x=>x.id===eUID);if(u)Object.assign(u,obj);
+    showToast('✓ '+fn+' '+ln+' mis à jour');
+  }else{
+    ud.push({id:Date.now(),...obj});
+    showToast('✓ '+fn+' '+ln+' ajouté(e)');
+  }
+  closeUM();renderUsers();
+}
+
+/* TOAST */
+let tt;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800);}
+</script>
+</body>
+</html>
