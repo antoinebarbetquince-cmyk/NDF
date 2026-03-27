@@ -12,21 +12,24 @@ export default async function DashboardPage() {
   if (!user) return null
 
   const { data: rawReports } = await supabase
-  const reports: ExpenseReport[] = rawReports ?? []
+    .from('expense_reports')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
-    .limit(50) as { data: ExpenseReport[] }
+    .limit(50)
+  const reports: ExpenseReport[] = rawReports ?? []
 
-  const { count: pendingCount = 0 } = await supabase
-    .from('expense_reports').select('*', { count:'exact', head:true }).eq('status','submitted')
+  const { count: pendingCount } = await supabase
+    .from('expense_reports')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'submitted')
 
   const approved = reports.filter(r => r.status === 'approved')
   const kpis = [
-    { label:'Total remboursé',  value: formatCurrency(approved.reduce((s,r)=>s+r.total_ttc,0)), sub:'Notes validées',      color:'#4f6ef7', icon:'💶' },
-    { label:'En attente',       value: String(reports.filter(r=>r.status==='submitted').length), sub:'À valider',            color:'#f59e0b', icon:'⏳' },
-    { label:'Validées',         value: String(approved.length),                                  sub:'Ce trimestre',         color:'#22c55e', icon:'✅' },
-    { label:'TVA récupérable',  value: formatCurrency(approved.reduce((s,r)=>s+r.total_tva,0)), sub:'Notes approuvées',     color:'#8b5cf6', icon:'🧾' },
+    { label:'Total remboursé', value: formatCurrency(approved.reduce((s,r)=>s+r.total_ttc,0)), sub:'Notes validées',  icon:'💶' },
+    { label:'En attente',      value: String(reports.filter(r=>r.status==='submitted').length), sub:'À valider',       icon:'⏳' },
+    { label:'Validées',        value: String(approved.length),                                  sub:'Ce trimestre',    icon:'✅' },
+    { label:'TVA récupérable', value: formatCurrency(approved.reduce((s,r)=>s+r.total_tva,0)), sub:'Notes approuvées',icon:'🧾' },
   ]
 
   return (
@@ -37,7 +40,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-4 gap-4">
           {kpis.map(k => (
             <Link key={k.label} href="/reports"
-                  className="card p-4 hover:shadow-md transition-all hover:border-[#4f6ef7]/30 cursor-pointer">
+                  className="card p-4 hover:shadow-md transition-all cursor-pointer">
               <div className="text-xl mb-2">{k.icon}</div>
               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">{k.label}</div>
               <div className="text-2xl font-bold text-gray-900 tracking-tight">{k.value}</div>
@@ -62,7 +65,7 @@ export default async function DashboardPage() {
                 <th className="th text-right">TTC</th><th className="th">Statut</th>
               </tr></thead>
               <tbody>
-                {reports.slice(0,6).map(r => (
+                {reports.slice(0, 6).map(r => (
                   <tr key={r.id} className="hover:bg-gray-50 transition-colors">
                     <td className="td"><Link href={"/reports/"+r.id} className="text-[#4f6ef7] font-medium hover:underline">{r.title}</Link></td>
                     <td className="td text-gray-400">{formatDateShort(r.period_start)}</td>
